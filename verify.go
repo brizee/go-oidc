@@ -135,13 +135,14 @@ func (v *IDTokenVerifier) Verify(ctx context.Context, rawIDToken string) (*IDTok
 	}
 
 	t := &IDToken{
-		Issuer:   token.Issuer,
-		Subject:  token.Subject,
-		Audience: []string(token.Audience),
-		Expiry:   time.Time(token.Expiry),
-		IssuedAt: time.Time(token.IssuedAt),
-		Nonce:    token.Nonce,
-		claims:   payload,
+		Issuer:    token.Issuer,
+		Subject:   token.Subject,
+		Audience:  []string(token.Audience),
+		Expiry:    time.Time(token.Expiry),
+		IssuedAt:  time.Time(token.IssuedAt),
+		NotBefore: time.Time(token.NotBefore),
+		Nonce:     token.Nonce,
+		claims:    payload,
 	}
 
 	// Check issuer.
@@ -178,6 +179,10 @@ func (v *IDTokenVerifier) Verify(ctx context.Context, rawIDToken string) (*IDTok
 
 		if t.Expiry.Before(now()) {
 			return nil, fmt.Errorf("oidc: token is expired (Token Expiry: %v)", t.Expiry)
+		}
+
+		if t.NotBefore.After(now()) {
+			return nil, fmt.Errorf("oidc: token is not yet valid (Token NotBefore: %v)", t.NotBefore)
 		}
 	}
 

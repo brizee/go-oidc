@@ -230,6 +230,8 @@ type IDToken struct {
 	// A unique string which identifies the end user.
 	Subject string
 
+	// NotBefore this time will the token be valid.
+	NotBefore time.Time
 	// Expiry of the token. Ths package will not process tokens that have
 	// expired unless that validation is explicitly turned off.
 	Expiry time.Time
@@ -268,12 +270,13 @@ func (i *IDToken) Claims(v interface{}) error {
 }
 
 type idToken struct {
-	Issuer   string   `json:"iss"`
-	Subject  string   `json:"sub"`
-	Audience audience `json:"aud"`
-	Expiry   jsonTime `json:"exp"`
-	IssuedAt jsonTime `json:"iat"`
-	Nonce    string   `json:"nonce"`
+	Issuer    string   `json:"iss"`
+	Subject   string   `json:"sub"`
+	Audience  audience `json:"aud"`
+	Expiry    jsonTime `json:"exp"`
+	IssuedAt  jsonTime `json:"iat"`
+	NotBefore jsonTime `json:"nbf"`
+	Nonce     string   `json:"nonce"`
 }
 
 type audience []string
