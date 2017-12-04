@@ -13,6 +13,7 @@ import (
 	"time"
 
 	"golang.org/x/oauth2"
+	"google.golang.org/appengine/urlfetch"
 	jose "gopkg.in/square/go-jose.v2"
 )
 
@@ -47,7 +48,7 @@ func ClientContext(ctx context.Context, client *http.Client) context.Context {
 }
 
 func doRequest(ctx context.Context, req *http.Request) (*http.Response, error) {
-	client := http.DefaultClient
+	client := urlfetch.Client(ctx)
 	if c, ok := ctx.Value(oauth2.HTTPClient).(*http.Client); ok {
 		client = c
 	}
